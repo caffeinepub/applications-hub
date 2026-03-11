@@ -1,35 +1,37 @@
-import React, { useState } from 'react';
-import { Toaster } from '@/components/ui/sonner';
-import { HomePage } from './pages/HomePage';
-import { RegisterPage } from './pages/RegisterPage';
-import { LoginPage } from './pages/LoginPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { CameraVerificationPage } from './pages/CameraVerificationPage';
-import { IDVerificationPage } from './pages/IDVerificationPage';
-import { DisplayNamePage } from './pages/DisplayNamePage';
-import { ParentalControlsPage } from './pages/ParentalControlsPage';
-import type { UserProfile } from './backend.d';
+import { Toaster } from "@/components/ui/sonner";
+import React, { useState } from "react";
+import type { UserProfile } from "./backend.d";
+import { useMusicPlayer } from "./hooks/useMusicPlayer";
+import { CameraVerificationPage } from "./pages/CameraVerificationPage";
+import { DisplayNamePage } from "./pages/DisplayNamePage";
+import { HomePage } from "./pages/HomePage";
+import { IDVerificationPage } from "./pages/IDVerificationPage";
+import { LoginPage } from "./pages/LoginPage";
+import { ParentalControlsPage } from "./pages/ParentalControlsPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 export type PageName =
-  | 'home'
-  | 'login'
-  | 'register'
-  | 'settings'
-  | 'camera-verify'
-  | 'id-verify'
-  | 'display-name'
-  | 'parental-controls';
+  | "home"
+  | "login"
+  | "register"
+  | "settings"
+  | "camera-verify"
+  | "id-verify"
+  | "display-name"
+  | "parental-controls";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageName>('home');
+  const [currentPage, setCurrentPage] = useState<PageName>("home");
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [tempUsername, setTempUsername] = useState<string>('');
+  const [tempUsername, setTempUsername] = useState<string>("");
   const [verifiedAge, setVerifiedAge] = useState<number | null>(null);
+  const { volume, setVolume, isMuted } = useMusicPlayer();
 
   const navigate = (page: PageName) => {
     setCurrentPage(page);
     // Scroll to top on page change
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRegister = (username: string) => {
@@ -37,11 +39,11 @@ function App() {
     // Create minimal user profile for UI state
     setCurrentUser({
       username,
-      displayName: '',
+      displayName: "",
       dob: BigInt(0),
       ageVerified: false,
       cameraVerification: false,
-      passwordHash: '',
+      passwordHash: "",
       parentalControls: {
         contentFilterEnabled: true,
         maxAgeRating: BigInt(1),
@@ -71,7 +73,10 @@ function App() {
     }
   };
 
-  const handleParentalControlsUpdate = (contentFilter: boolean, maxRating: number) => {
+  const handleParentalControlsUpdate = (
+    contentFilter: boolean,
+    maxRating: number,
+  ) => {
     if (currentUser) {
       setCurrentUser({
         ...currentUser,
@@ -87,34 +92,29 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case "home":
         return <HomePage onNavigate={navigate} />;
 
-      case 'register':
+      case "register":
         return (
-          <RegisterPage
-            onNavigate={navigate}
-            onRegister={handleRegister}
-          />
+          <RegisterPage onNavigate={navigate} onRegister={handleRegister} />
         );
 
-      case 'login':
-        return (
-          <LoginPage
-            onNavigate={navigate}
-            onLogin={handleLogin}
-          />
-        );
+      case "login":
+        return <LoginPage onNavigate={navigate} onLogin={handleLogin} />;
 
-      case 'settings':
+      case "settings":
         return (
           <SettingsPage
             onNavigate={navigate}
             currentUser={currentUser}
+            volume={volume}
+            setVolume={setVolume}
+            isMuted={isMuted}
           />
         );
 
-      case 'camera-verify':
+      case "camera-verify":
         return (
           <CameraVerificationPage
             onNavigate={navigate}
@@ -123,7 +123,7 @@ function App() {
           />
         );
 
-      case 'id-verify':
+      case "id-verify":
         return (
           <IDVerificationPage
             onNavigate={navigate}
@@ -132,7 +132,7 @@ function App() {
           />
         );
 
-      case 'display-name':
+      case "display-name":
         return (
           <DisplayNamePage
             onNavigate={navigate}
@@ -141,7 +141,7 @@ function App() {
           />
         );
 
-      case 'parental-controls':
+      case "parental-controls":
         return (
           <ParentalControlsPage
             onNavigate={navigate}
@@ -166,11 +166,11 @@ function App() {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: 'oklch(0.13 0.04 265)',
-            border: '2px solid oklch(0.35 0.12 245)',
-            color: 'oklch(0.97 0.01 265)',
-            fontFamily: 'Share Tech Mono, monospace',
-            fontSize: '12px',
+            background: "oklch(0.13 0.04 265)",
+            border: "2px solid oklch(0.35 0.12 245)",
+            color: "oklch(0.97 0.01 265)",
+            fontFamily: "Share Tech Mono, monospace",
+            fontSize: "12px",
           },
         }}
       />
